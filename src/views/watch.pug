@@ -1,4 +1,4 @@
 extends base.pug
 
 block content
-    h1 you can watch videos in this page
+    h3 #{video.views} #{video.views in [0, 1]  ? "view":"views"}
