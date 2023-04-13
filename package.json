@@ -19,6 +19,7 @@
   "homepage": "https://github.com/sjghub/wetube-reloaded_home#readme",
   "dependencies": {
     "express": "^4.18.2",
+    "mongoose": "^7.0.3",
     "morgan": "^1.10.0",
     "pug": "^3.0.2"
   },
