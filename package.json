@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec babel-node src/server.js"
+    "dev": "nodemon --exec babel-node src/init.js"
   },
   "author": "sungjoon<dkdldrha@naver.com>",
   "license": "MIT",
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/sjghub/wetube-reloaded_home#readme",
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^7.0.3",
+    "mongoose": "^5.12.3",
     "morgan": "^1.10.0",
     "pug": "^3.0.2"
   },

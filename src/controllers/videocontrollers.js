@@ -1,50 +1,35 @@
-let videos = [
-  {
-    title: "video #1",
-    views: 1,
-    rating: 5,
-    comments: 2,
-    creatAd: "1 minuts ago",
-    id: 1,
-  },
-  {
-    title: "video #2",
-    views: 32,
-    rating: 4,
-    comments: 2,
-    creatAd: "2 minuts ago",
-    id: 2,
-  },
-  {
-    title: "video #3",
-    views: 0,
-    rating: 5,
-    comments: 2,
-    creatAd: "3 minuts ago",
-    id: 3,
-  },
-];
-export const trending = (req, res) => {
+import Video from "../models/Video";
+
+/*
+
+// Video.find({}, (error, videos) => {
+//   console.log("start");   1번째 
+//   if (error) {
+  //     return res.render("server-error");
+  //   }
+  //   return res.render("home", { pagetitle: "Home", videos });
+  // });    3번째
+  //   console.log("finished");  2번째
+*/
+
+export const home = async (req, res) => {
+  const videos = await Video.find({});
   return res.render("home.pug", {
     pagetitle: "Home",
-    videos,
+    videos: [],
   });
 };
 export const watch = (req, res) => {
   const { id } = req.params;
-  const video = videos[id - 1];
   return res.render("watch.pug", {
-    pagetitle: `Watching ${video.title}`,
-    video,
+    pagetitle: `Watching `,
   });
 };
 export const getEdit = (req, res) => {
   {
     const { id } = req.params;
-    const video = videos[id - 1];
     return res.render("edit.pug", {
-      pagetitle: `Editing ${video.title}`,
-      video,
+      pagetitle: `Editing `,
     });
   }
 };
