@@ -14,9 +14,10 @@ import Video from "../models/Video";
 
 export const home = async (req, res) => {
   const videos = await Video.find({});
+  console.log(videos);
   return res.render("home.pug", {
     pagetitle: "Home",
-    videos: [],
+    videos,
   });
 };
 export const watch = (req, res) => {
@@ -42,7 +43,17 @@ export const postEdit = (req, res) => {
 export const getUpload = (req, res) => {
   return res.render("upload.pug");
 };
-export const postUpload = (req, res) => {
-  // here we will add a video to the videos array
+export const postUpload = async (req, res) => {
+  const { title, description, hashtags } = req.body;
+  await Video.create({
+    title: title,
+    description: description,
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    },
+  });
   return res.redirect("/");
 };
