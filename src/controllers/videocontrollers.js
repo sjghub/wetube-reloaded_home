@@ -45,15 +45,18 @@ export const getUpload = (req, res) => {
 };
 export const postUpload = async (req, res) => {
   const { title, description, hashtags } = req.body;
-  await Video.create({
-    title: title,
-    description: description,
-    createdAt: Date.now(),
-    hashtags: hashtags.split(",").map((word) => `#${word}`),
-    meta: {
-      views: 0,
-      rating: 0,
-    },
-  });
-  return res.redirect("/");
+  try {
+    await Video.create({
+      title: title,
+      description: description,
+      hashtags: hashtags.split(",").map((word) => `#${word}`),
+    });
+    return res.redirect("/");
+  } catch (error) {
+    console.log(error);
+    return res.render("upload", {
+      pagetitle: "upload video",
+      errorMessage: error._message,
+    });
+  }
 };
