@@ -11,6 +11,11 @@ const videoSchema = new mongoose.Schema({
   },
 });
 
+videoSchema.pre("save", async function () {
+  this.hashtags = this.hashtags[0].split(",").map((word) => `#${word}`);
+});
+//모델이 생기기전에 middlware 호출
+
 const Video = mongoose.model("Video", videoSchema);
 
 export default Video;
