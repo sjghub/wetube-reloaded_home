@@ -20,24 +20,44 @@ export const home = async (req, res) => {
     videos,
   });
 };
-export const watch = (req, res) => {
+export const watch = async (req, res) => {
   const { id } = req.params;
-  return res.render("watch.pug", {
-    pagetitle: `Watching `,
-  });
+  const video = await Video.findById(id);
+  if (video) {
+    return res.render("watch.pug", {
+      pagetitle: video.title,
+      video,
+    });
+  }
+  return res.render("404", { pagetitle: "Video not found" });
 };
-export const getEdit = (req, res) => {
+
+export const getEdit = async (req, res) => {
   {
     const { id } = req.params;
+    const video = await Video.findById(id);
+    if (!video) {
+      return res.render("404", { pagetitle: "Video not found" });
+    }
     return res.render("edit.pug", {
-      pagetitle: `Editing `,
+      pagetitle: `Editing ${video.title}`,
+      video,
     });
   }
 };
-export const postEdit = (req, res) => {
+export const postEdit = async (req, res) => {
   const { id } = req.params;
-  const { title } = req.body;
-  videos[id - 1].title = title;
+  const { title, description, hashtags } = req.body;
+  const video = await Video.exists({ _id: id });
+  if (!video) {
+    return res.render("404", { pagetitle: "Video not found" });
+  }
+  await Video.findByIdAndUpdate(id, {
+    title,
+    description,
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+  });
+
   return res.redirect(`/videos/${id}`);
 };
 export const getUpload = (req, res) => {

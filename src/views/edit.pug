@@ -1,6 +1,9 @@
 extends base.pug
 
 block content
+    h4 update video
     form( method="POST")
-        input(name="title" ,placeholder = "Video Title", value="title",required)
+        input(name="title" ,placeholder = "Video Title" value=video.title required)
+        input(placeholder="Description", required, value=video.description type="text", name="description")
+        input(placeholder="Hashtags, separated by comma.",value=video.hashtags.map((e)=>`${e.slice(1)}`).join() required, type="text", name="hashtags")
         input(value = "Save",type = "submit")
