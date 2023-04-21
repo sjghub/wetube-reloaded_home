@@ -86,3 +86,12 @@ export const deleteVideo = async (req, res) => {
   await Video.findByIdAndDelete(id);
   return res.redirect("/");
 };
+
+export const search = async (req, res) => {
+  const { title } = req.query;
+  let videos = [];
+  if (title) {
+    videos = await Video.find({ title: { $regex: new RegExp(title, "i") } });
+  }
+  return res.render("search", { pagetitle: "Search ", videos });
+};
