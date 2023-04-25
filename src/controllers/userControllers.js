@@ -12,7 +12,6 @@ export const postJoin = async (req, res) => {
     password,
     location,
   });
-  console.log(req.body);
   return res.redirect("/login");
 };
 export const deleteUser = (req, res) => res.send("Delete users");
