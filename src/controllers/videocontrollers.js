@@ -14,7 +14,6 @@ import Video from "../models/Video";
 
 export const home = async (req, res) => {
   const videos = await Video.find({});
-  console.log(videos);
   return res.render("home.pug", {
     pagetitle: "Home",
     videos,
@@ -29,7 +28,7 @@ export const watch = async (req, res) => {
       video,
     });
   }
-  return res.render("404", { pagetitle: "Video not found" });
+  return res.status(404).render("404", { pagetitle: "Video not found" });
 };
 
 export const getEdit = async (req, res) => {
@@ -37,7 +36,7 @@ export const getEdit = async (req, res) => {
     const { id } = req.params;
     const video = await Video.findById(id);
     if (!video) {
-      return res.render("404", { pagetitle: "Video not found" });
+      return res.status(404).render("404", { pagetitle: "Video not found" });
     }
     return res.render("edit.pug", {
       pagetitle: `Editing ${video.title}`,
@@ -50,7 +49,7 @@ export const postEdit = async (req, res) => {
   const { title, description, hashtags } = req.body;
   const video = await Video.exists({ _id: id });
   if (!video) {
-    return res.render("404", { pagetitle: "Video not found" });
+    return res.status(404).render("404", { pagetitle: "Video not found" });
   }
   await Video.findByIdAndUpdate(id, {
     title,
