@@ -93,19 +93,36 @@ export const finishGithubLogin = async (req, res) => {
   res.send(JSON.stringify(json));
   if ("access_token" in json) {
     const { access_token } = json;
-    const userRequest = await (
-      await fetch("https://api.github.com/user", {
+    const apiUrl = "https://api.github.com";
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       })
     ).json();
-    console.log(userRequest);
+    console.log(userData);
+    const emailData = await (
+      await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(emailData);
   } else {
     return res.redirect("/login");
   }
 };
 export const deleteUser = (req, res) => res.send("Delete users");
-export const edit = (req, res) => res.send("Edit users");
-export const logout = (req, res) => res.send("Logout");
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pagetitle: "Edit Profile" });
+};
+export const postEdit = (req, res) => {
+  return res.render("edit-profile", { pagetitle: "Edit Profile" });
+};
+export const logout = (req, res) => {
+  req.session.destroy();
+  return res.redirect("/");
+};
 export const see = (req, res) => res.send("See User");
