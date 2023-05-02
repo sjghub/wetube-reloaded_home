@@ -101,7 +101,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user`, {
         headers: {
@@ -109,20 +108,81 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(emailData);
   } else {
     return res.redirect("/login");
   }
 };
 export const deleteUser = (req, res) => res.send("Delete users");
 export const getEdit = (req, res) => {
-  return res.render("edit-profile", { pagetitle: "Edit Profile" });
+  return res.render("users/edit-profile", { pagetitle: "Edit Profile" });
 };
-export const postEdit = (req, res) => {
-  return res.render("edit-profile", { pagetitle: "Edit Profile" });
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+  const samesUserName = await User.findOne({ username });
+  const samesUserEmail = await User.findOne({ email });
+  if (samesUserEmail && req.session.user.email !== email) {
+    return res.render("users/edit-profile", {
+      pagetitle: "Edit Profile",
+      errormessage: "email already exists",
+    });
+  }
+  if (samesUserName && req.session.user.username !== username) {
+    return res.render("users/edit-profile", {
+      pagetitle: "Edit Profile",
+      errormessage: "username already exists",
+    });
+  }
+  const updateUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updateUser;
+  return res.redirect("/users/edit");
 };
 export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
+};
+
+export const getChangePassword = (req, res) => {
+  return res.render("users/change-password", {
+    pagetitle: "Change password",
+  });
+};
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword, newPassword, newPassword2 },
+  } = req;
+  const user = await User.findById(_id);
+  const ok = await bycrpt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pagetitle: "Change password",
+      errormessage: "The current password is incorrect",
+    });
+  }
+  if (newPassword !== newPassword2) {
+    return res.status(400).render("users/change-password", {
+      pagetitle: "Change password",
+      errormessage: "The password does not match the confirmation",
+    });
+  }
+  user.password = newPassword;
+  await user.save();
+  return res.redirect("/users/logout");
 };
 export const see = (req, res) => res.send("See User");

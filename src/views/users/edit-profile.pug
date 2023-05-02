@@ -1,9 +1,14 @@
-extends base
+extends ../base
 
 block content
+    if(errormessage)
+        h1=errormessage
+    
     form(method="POST")
         input(name="name", type="text", placeholder="Name",value=loggedInUser.name )
         input(name="email", type="email", placeholder="Email",value=loggedInUser.email )
         input(name="username", type="text", placeholder="UserName",value=loggedInUser.username )
-        input(name="password", type="password", placeholder="Password",value=loggedInUser.location)
+        input(name="location", type="password", placeholder="Location",value=loggedInUser.location)
         input(type="submit", value="Update Profile" )
+        hr
+        a(href="change-password") Chansge Password &rarr; 
