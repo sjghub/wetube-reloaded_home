@@ -43,7 +43,7 @@ export const getLogin = (req, res) =>
 
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username, socialOnly: false });
   if (!user) {
     return res.status(400).render("login", {
       pagetitle: "Log In",
@@ -90,7 +90,6 @@ export const finishGithubLogin = async (req, res) => {
   });
   const json = await data.json();
   console.log(json);
-  res.send(JSON.stringify(json));
   if ("access_token" in json) {
     const { access_token } = json;
     const apiUrl = "https://api.github.com";
@@ -101,13 +100,35 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
+    console.log(userData);
     const emailData = await (
-      await fetch(`${apiUrl}/user`, {
+      await fetch(`${apiUrl}/user/emails`, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       })
     ).json();
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    if (!emailObj) {
+      return res.redirect("/login");
+    }
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      user = await User.create({
+        avatarUrl: userData.avatar_url,
+        name: userData.name,
+        email: emailObj.email,
+        username: userData.login,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
   } else {
     return res.redirect("/login");
   }
@@ -121,8 +142,11 @@ export const postEdit = async (req, res) => {
     session: {
       user: { _id },
     },
+
     body: { name, email, username, location },
+    file,
   } = req;
+  console.log(file);
   const samesUserName = await User.findOne({ username });
   const samesUserEmail = await User.findOne({ email });
   if (samesUserEmail && req.session.user.email !== email) {
