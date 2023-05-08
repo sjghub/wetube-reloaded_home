@@ -4,9 +4,12 @@ block content
     video(src="/"+video.fileUrl,controls) 
     div
         p=video.description
-        small=video.createdAt
-    small=video.hashtags.join(" ")
-    div
-        a(href=`${video.id}/edit`) Edit Video &rarr;
-    a(href=`${video.id}/delete`) Delete Video &rarr;
+        small=video.createdAt 
+        small #{video.hashtags.join(" ")}
+    small Uploaded by 
+        a(href=`/users/${video.owner._id}`)=video.owner.name
+    if loggedInUser._id  === video.owner._id
+        div
+            a(href=`${video.id}/edit`) Edit Video &rarr;
+        a(href=`${video.id}/delete`) Delete Video &rarr;
     
