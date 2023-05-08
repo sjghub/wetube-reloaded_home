@@ -23,7 +23,7 @@ export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if (video) {
-    return res.render("watch.pug", {
+    return res.render("videos/watch.pug", {
       pagetitle: video.title,
       video,
     });
@@ -60,20 +60,22 @@ export const postEdit = async (req, res) => {
   return res.redirect(`/videos/${id}`);
 };
 export const getUpload = (req, res) => {
-  return res.render("upload.pug");
+  return res.render("videos/upload");
 };
 export const postUpload = async (req, res) => {
+  const file = req.file;
   const { title, description, hashtags } = req.body;
   try {
     await Video.create({
       title: title,
       description: description,
+      fileUrl: file.path,
       hashtags: Video.hashtagsForm(hashtags),
     });
     return res.redirect("/");
   } catch (error) {
     console.log(error);
-    return res.status(400).render("upload", {
+    return res.status(400).render("videos/upload", {
       pagetitle: "upload video",
       errorMessage: error._message,
     });

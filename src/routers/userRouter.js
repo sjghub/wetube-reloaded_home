@@ -13,7 +13,7 @@ import {
 import {
   protectroMiddleware,
   publicOnlyMiddleware,
-  uploadFile,
+  avartarUpload,
 } from "../middlewares";
 const userRouter = express.Router();
 
@@ -22,7 +22,7 @@ userRouter
   .route("/edit")
   .all(protectroMiddleware)
   .get(getEdit)
-  .post(uploadFile.single("avatar"), postEdit);
+  .post(avartarUpload.single("avatar"), postEdit);
 userRouter
   .route("/change-password")
   .all(protectroMiddleware)
