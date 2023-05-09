@@ -90,8 +90,8 @@ const handelMouseLeave = () => {
   controlsTimeout = setTimeout(hideControls, 3000);
 };
 const handelEnded = () => {
-  const { videoid } = videoContainer.dataset;
-  fetch(`/api/videos/${videoid}/views`, {
+  const { id } = videoContainer.dataset;
+  fetch(`/api/videos/${id}/view`, {
     method: "POST",
   });
 };
