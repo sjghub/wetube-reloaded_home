@@ -7,6 +7,10 @@ const currentTime = document.getElementById("currentTime");
 const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullscreen");
 const videoContainer = document.getElementById("videoContainer");
+const videoControls = document.getElementById("videoControls");
+
+let controlsTimeout = null;
+let controlsMovementTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
 
@@ -43,9 +47,11 @@ const handleVolumeChange = (event) => {
 const formatTime = (seconds) =>
   new Date(seconds * 1000).toISOString().substring(11, 19);
 
-const hadndleLoaderMetadata = () => {
+const handleMetadata = () => {
   totalTime.innerText = formatTime(Math.floor(video.duration));
   timeline.max = Math.floor(video.duration);
+  console.log(video.duration);
+  console.log("affa");
 };
 
 const handleTimeUpdate = () => {
@@ -68,10 +74,32 @@ const hadleScreenBtn = () => {
     videoContainer.requestFullscreen();
   }
 };
+
+const hideControls = () => videoControls.classList.remove("showing");
+const handelMouseMove = () => {
+  if (controlsTimeout) {
+    clearTimeout(controlsTimeout);
+    controlsTimeout = null;
+  }
+  if (controlsMovementTimeout) {
+    clearTimeout(controlsMovementTimeout);
+    controlsMovementTimeout = null;
+  }
+  videoControls.classList.add("showing");
+  controlsMovementTimeout = setTimeout(hideControls, 3000);
+};
+const handelMouseLeave = () => {
+  controlsTimeout = setTimeout(hideControls, 3000);
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
-video.addEventListener("loadedmetadata", hadndleLoaderMetadata);
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", hadleTimeLine);
 fullScreenBtn.addEventListener("click", hadleScreenBtn);
+video.addEventListener("mousemove", handelMouseMove);
+video.addEventListener("mouseleave", handelMouseLeave);
+video.readyState
+  ? handleMetadata()
+  : video.addEventListener("loadedmetadata", handleMetadata);
