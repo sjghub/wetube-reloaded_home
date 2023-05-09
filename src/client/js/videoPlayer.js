@@ -50,8 +50,6 @@ const formatTime = (seconds) =>
 const handleMetadata = () => {
   totalTime.innerText = formatTime(Math.floor(video.duration));
   timeline.max = Math.floor(video.duration);
-  console.log(video.duration);
-  console.log("affa");
 };
 
 const handleTimeUpdate = () => {
@@ -91,11 +89,18 @@ const handelMouseMove = () => {
 const handelMouseLeave = () => {
   controlsTimeout = setTimeout(hideControls, 3000);
 };
+const handelEnded = () => {
+  const { videoid } = videoContainer.dataset;
+  fetch(`/api/videos/${videoid}/views`, {
+    method: "POST",
+  });
+};
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("timeupdate", handleTimeUpdate);
+video.addEventListener("ended", handelEnded);
 timeline.addEventListener("input", hadleTimeLine);
 fullScreenBtn.addEventListener("click", hadleScreenBtn);
 video.addEventListener("mousemove", handelMouseMove);
