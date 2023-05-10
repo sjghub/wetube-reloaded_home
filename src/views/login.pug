@@ -2,14 +2,12 @@ extends base
 
 block content
     if(exists)
-    h1=errormessage
+        h1=errormessage
     form(method="POST") 
         input(name="username", type="text", placeholder="UserName",required=true )
         input(name="password", type="password", placeholder="Password",required=true )
         input(type="submit",value="Log in")
-        br
-        a(href="/users/github/start") Continue with github &rarr; 
-    hr
-    div
+        include partials/social-login
+    div.auth-switch
         span Don`t have an account? 
         a(href="/join") Create one now &rarr; 

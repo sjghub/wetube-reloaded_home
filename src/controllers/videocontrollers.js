@@ -14,7 +14,9 @@ import Video from "../models/Video";
 */
 
 export const home = async (req, res) => {
-  const videos = await Video.find({});
+  const videos = await Video.find({})
+    .sort({ createdAt: "desc" })
+    .populate("owner");
   return res.render("home.pug", {
     pagetitle: "Home",
     videos,
@@ -118,12 +120,16 @@ export const deleteVideo = async (req, res) => {
 };
 
 export const search = async (req, res) => {
-  const { title } = req.query;
+  const { keyword } = req.query;
   let videos = [];
-  if (title) {
-    videos = await Video.find({ title: { $regex: new RegExp(title, "i") } });
+  if (keyword) {
+    videos = await Video.find({
+      title: {
+        $regex: new RegExp(`${keyword}$`, "i"),
+      },
+    }).populate("owner");
   }
-  return res.render("search", { pagetitle: "Search ", videos });
+  return res.render("search", { pageTitle: "Search", videos });
 };
 
 export const registerView = async (req, res) => {

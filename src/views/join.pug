@@ -2,7 +2,7 @@ extends base
 
 block content
     if(exists)
-    h1=errormessage
+        h1=errormessage
     form(method="POST") 
         input(name="name", type="text", placeholder="Name",required=true )
         input(name="email", type="email", placeholder="Email",required=true )
@@ -11,7 +11,7 @@ block content
         input(name="password2", type="password", placeholder="Confirm password ",required=true )
         input(name="location", type="text", placeholder="Location",required=true )
         input(type="submit",value="Join")
-        hr
-        div
-            span Already have an account? 
-            a(href="/login") Log in now &rarr; 
+        include partials/social-login
+    div.auth-switch
+        span Already have an account? 
+        a(href="/login") Log in now &rarr; 
