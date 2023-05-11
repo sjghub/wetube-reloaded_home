@@ -176,11 +176,17 @@ export const postEdit = async (req, res) => {
   return res.redirect("/users/edit");
 };
 export const logout = (req, res) => {
-  req.session.destroy();
+  req.session.user = null;
+  req.session.loggedIn = false;
+  req.flash("info", "Bye Bye");
   return res.redirect("/");
 };
 
 export const getChangePassword = (req, res) => {
+  if (req.session.user.socialOnly === true) {
+    req.flash("error", "Can`t change password");
+    return res.redirect("/");
+  }
   return res.render("users/change-password", {
     pagetitle: "Change password",
   });
@@ -208,6 +214,7 @@ export const postChangePassword = async (req, res) => {
   }
   user.password = newPassword;
   await user.save();
+  req.flash("info", "Password updated");
   return res.redirect("/users/logout");
 };
 export const see = async (req, res) => {
